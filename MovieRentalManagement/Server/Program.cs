@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using MovieRentalManagement.Server.Data;
 using MovieRentalManagement.Server.Models;
 using Microsoft.AspNetCore.Identity;
+using MovieRentalManagement.Server.Repository;
+using MovieRentalManagement.Server.IRepository;
 
 namespace MovieRentalManagement
 {
@@ -29,6 +31,7 @@ namespace MovieRentalManagement
                 .AddIdentityServerJwt();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
