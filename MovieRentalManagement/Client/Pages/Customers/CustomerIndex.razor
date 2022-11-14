@@ -1,0 +1,73 @@
+﻿@page "/customer/"
+@using MovieRentalManagement.Shared.Domain
+@using MovieRentalManagement.Client.Static
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Authorization
+@using System.Net.Http.Json
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<a class="btn btn-outline-dark" href="/customers/create">Customers</a>
+
+@if(customers == null){
+    <div class="alert alert-info">Loading customers...</div>
+}
+
+else{
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Tax ID</th>
+                <th>Contact Number</th>
+                <th>Email Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var item in customers){
+                <tr>
+                    <td>@item.TaxId</td>
+                    <td>@item.Address</td>
+                    <td>@item.EmailAddress</td>
+                    <td>
+                        <a href="/customer/view/@item.Id" class="btn btn-secondary">
+                            <span class="oi oi-book"></span>    
+                        </a>
+                        <a href="/customer/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+
+                        <button class="btn btn-danger" onclick="@(() => Delete(item.Id))">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Customer> customers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        customers = await _client.GetFromJsonAsync<List<Customer>>(EndPoints.CustomerEndpoint);
+    }
+
+    private async Task Delete(int id){
+        var customer = customers.First(x => x.Id == id);
+
+        var result = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {customer.Id}");
+
+        if(result){
+            await _client.DeleteAsync($"{EndPoints.CustomerEndpoint}{id}");
+            await OnInitializedAsync();
+        }
+    }
+
+
+}

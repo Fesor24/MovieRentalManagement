@@ -20,12 +20,14 @@ namespace MovieRentalManagement.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllMovies()
         {
-            return Ok(await _unit.MovieRepository.GetAll());
+            var includes = new List<string> { "Genre", "Industry" };
+            return Ok(await _unit.MovieRepository.GetAll(includes: includes));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+            var includes = new List<string> { "Genre", "Industry", "Bookings"};
             var movie = await _unit.MovieRepository.Get(x => x.Id == id);
 
             if (movie == null)
@@ -73,7 +75,7 @@ namespace MovieRentalManagement.Server.Controllers
             return CreatedAtAction("GetById", new { id = movie.Id }, movie);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGenre(int id)
         {
             await _unit.MovieRepository.Delete(id);

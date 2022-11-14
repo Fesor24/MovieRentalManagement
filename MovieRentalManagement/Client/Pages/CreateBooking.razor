@@ -1,0 +1,79 @@
+﻿@page "/booking/create"
+
+@using MovieRentalManagement.Shared.Domain
+@using MovieRentalManagement.Client.Static
+@inject HttpClient _client
+@inject NavigationManager navigationManager
+
+<h3>CreateBooking</h3>
+
+
+<EditForm Model="@booking" OnValidSubmit="AddBooking">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <div class="form-group">
+        <label>Movie: </label>
+
+        <InputSelect @bind-Value="booking.MovieId" class="form-control">
+            <option value="">--select a movie--</option>
+            @if(movies != null){
+                foreach(var item in movies){
+                    <option value="@item.Id">@item.Genre.Name @item.Industry.Name | @item.MovieRecordNumber</option>
+                }
+            }
+
+        </InputSelect>
+        <ValidationMessage For="@(()=> booking.MovieId)" ></ValidationMessage>
+    </div>
+
+    <div class="form-group">
+        <label>Customer: </label>
+
+        <InputSelect @bind-Value="booking.CustomerId" class="form-control">
+            <option value="">--select a customer--</option>
+            @if (customers != null)
+            {
+                foreach (var item in customers)
+                {
+                    <option value="@item.Id">@item.TaxId ||@item.EmailAddress</option>
+                }
+            }
+
+        </InputSelect>
+        <ValidationMessage For="@(()=> booking.MovieId)"></ValidationMessage>
+    </div>
+
+    <div class="form-group">
+        <label>Date Out: </label>
+        <div>
+            <InputDate @bind-Value="@booking.DateOut" class="form-control"></InputDate>
+            <ValidationMessage For = "@(()=> booking.DateOut)"></ValidationMessage>
+        </div>
+    </div>
+
+    <button class="btn btn-outline-dark d-block">
+        <span class="oi oi-arrow-right"></span>
+        Add Booking
+
+    </button>
+
+</EditForm>
+@code {
+    Booking booking = new Booking{
+        DateOut = DateTime.Now.Date
+    };
+
+    List<Customer> customers = new List<Customer>();
+    List<Movie> movies = new List<Movie>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        customers = await _client.GetFromJsonAsync<List<Customer>>(EndPoints.CustomerEndpoint);
+        movies = await _client.GetFromJsonAsync<List<Movie>>(EndPoints.MoviesEndpoint);
+    }
+    private async Task AddBooking(){
+        await _client.PostAsJsonAsync(EndPoints.BookingEndpoint, booking);
+        navigationManager.NavigateTo("/booking/");
+    }
+}

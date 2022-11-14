@@ -1,0 +1,71 @@
+﻿@page "/genre/"
+@inject HttpClient _client
+@using MovieRentalManagement.Shared.Domain
+@using MovieRentalManagement.Client.Static
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<a href="/genre/create/" class="btn btn-outline-dark">
+    <span class="oi oi-plus"></span>
+    Add Genre
+
+</a>
+<hr />
+<br />
+
+@if(genres == null){
+    <div class="alert alert-info">Loading genres...</div>
+}
+
+else{
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in genres){
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <a href="/genre/view/@item.Id" class="btn btn-secondary">
+                            <span class="oi oi-data-transfer-download"></span>
+                        </a>
+                        <a href="/genre/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+
+                        <button class="btn btn-danger" @onclick="@(()=> Delete(item.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Genre> genres;
+
+    protected async override Task OnInitializedAsync()
+    {
+        genres = await _client.GetFromJsonAsync<List<Genre>>(EndPoints.GenresEndpoint);
+       
+    }
+
+    private async Task Delete(int id){
+        var genre = genres.First(x => x.Id == id);
+
+        if(await js.InvokeAsync<bool>("confirm", $"Do you want to delete {genre.Name}?")){
+            await _client.DeleteAsync($"{EndPoints.GenresEndpoint}{id}");
+            await OnInitializedAsync();
+        }
+
+        
+    }
+
+}

@@ -1,0 +1,79 @@
+﻿@page "/movie/"
+@using MovieRentalManagement.Shared.Domain
+@using MovieRentalManagement.Client.Static
+@using Microsoft.AspNetCore.Authorization
+@using System.Net.Http.Json
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<a href="/movie/create" class="btn btn-outline-dark">
+    <span class="oi oi-plus"></span> Add Movie    
+</a>
+
+@if(movies == null){
+    <div class="alert alert-info">Loading movies...</div>
+}
+
+else{
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Genre</th>
+                <th>Industry</th>
+                <th>Year</th>
+                <th>Daily rate</th>
+                
+
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var item in movies){
+                <tr>
+                    <td>@item.Genre.Name</td>
+                    <td>@item.Industry.Name</td>
+                    <td>@item.Year</td>
+                    <td>@item.RentalRate</td>
+                    
+                    <td>
+                        <a href="/movies/view/@item.Id" class="btn btn-secondary">
+                            <span class="oi oi-book"></span>    
+                        </a>
+                        <a href="/movies/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+
+                        <button class="btn btn-danger" onclick="@(() => Delete(item.Id))">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Movie> movies;
+
+    protected async override Task OnInitializedAsync()
+    {
+        movies = await _client.GetFromJsonAsync<List<Movie>>(EndPoints.MoviesEndpoint);
+    }
+
+    private async Task Delete(int id){
+        var movie = movies.First(x => x.Id == id);
+
+        var result = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {movie.MovieRecordNumber}");
+
+        if(result){
+            await _client.DeleteAsync($"{EndPoints.MoviesEndpoint}{id}");
+            await OnInitializedAsync();
+        }
+    }
+
+
+}

@@ -6,6 +6,7 @@ using MovieRentalManagement.Server.Models;
 using Microsoft.AspNetCore.Identity;
 using MovieRentalManagement.Server.Repository;
 using MovieRentalManagement.Server.IRepository;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace MovieRentalManagement
 {
@@ -30,9 +31,11 @@ namespace MovieRentalManagement
             builder.Services.AddAuthentication()
                 .AddIdentityServerJwt();
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddRazorPages();
+         
 
             var app = builder.Build();
 
@@ -53,6 +56,8 @@ namespace MovieRentalManagement
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+
+           
 
             app.UseRouting();
 

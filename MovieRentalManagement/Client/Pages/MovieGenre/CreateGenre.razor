@@ -1,0 +1,57 @@
+﻿@page "/genre/create/"
+
+@using MovieRentalManagement.Client.Static
+@inject HttpClient _client
+@inject NavigationManager navigationManager
+
+<EditForm Model="@genre" OnValidSubmit="AddGenre">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <div class="form-group">
+        <label>Name: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@genre.Name"></InputText>
+        <ValidationMessage For="@(()=> genre.Name)"></ValidationMessage>
+        </div>
+        
+    </div>
+     <div class="form-group">
+        <label>Created By: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@genre.CreatedBy"></InputText>
+        <ValidationMessage For="@(()=> genre.CreatedBy)"></ValidationMessage>
+        </div>
+        
+    </div>
+     <div class="form-group">
+        <label>Updated By: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@genre.UpdatedBy"></InputText>
+        <ValidationMessage For="@(()=> genre.UpdatedBy)"></ValidationMessage>
+        </div>
+        
+    </div>
+
+    <button type="submit" class="btn btn-outline-secondary btn-block">
+        <span class="oi oi-align-right"></span> Add Genre
+
+    </button>
+
+</EditForm>
+
+@code {
+    Genre genre = new Genre();
+
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        
+    }
+
+    private async Task AddGenre(){
+        await _client.PostAsJsonAsync(EndPoints.GenresEndpoint, genre);
+        navigationManager.NavigateTo("/genre/");
+    }
+}

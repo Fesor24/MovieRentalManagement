@@ -9,5 +9,8 @@ namespace MovieRentalManagement.Shared.Domain
     public class Genre: BaseClass
     {
         public string Name { get; set; } = string.Empty;
+
+        public ICollection<Movie>? Movies { get; set; }
+
     }
 }

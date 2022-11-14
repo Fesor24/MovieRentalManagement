@@ -1,0 +1,100 @@
+﻿@page "/movie/create"
+
+@using MovieRentalManagement.Client.Static
+@inject HttpClient _client
+@inject NavigationManager navigationManager
+
+
+<h3>Create New Movie</h3>
+<hr />
+<br />
+
+<EditForm Model="@movie" OnValidSubmit="AddMovie">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <label class="form-group">Genre</label>
+    <div>
+        <select class="form-control" @bind="movie.GenreId">
+            <option value="">--Select a Genre--</option>
+            @if (genres != null)
+            {
+                foreach (var item in genres)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+
+        </select>
+        <ValidationMessage For="@(()=> movie.GenreId)"></ValidationMessage>
+    </div>
+
+    <label class="form-group">Industry</label>
+    <div>
+        <select class="form-control" @bind="movie.IndustryId">
+            <option value="">--Select an Industry--</option>
+            @if (industries != null)
+            {
+                foreach (var item in industries)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+
+        </select>
+        <ValidationMessage For="@(()=> movie.IndustryId)"></ValidationMessage>
+    </div>
+
+    <div class="form-group">
+        <label>Year: </label>
+        <div>
+            <InputNumber @bind-Value="@movie.Year" class="form-control" />
+            <ValidationMessage For="@(()=> movie.Year)"></ValidationMessage>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Movie Record Number</label>
+        <div>
+            <InputText @bind-Value="@movie.MovieRecordNumber" class="form-control" />
+            <ValidationMessage For="@(() => movie.MovieRecordNumber)"></ValidationMessage>
+        </div>
+        
+    </div>
+    <div class="form-group">
+        <label>Rental Rate</label>
+        <div>
+            <InputNumber @bind-Value="@movie.RentalRate" class="form-control" />
+            <ValidationMessage For="@(() => movie.RentalRate)"></ValidationMessage>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block mt-2">
+        Create Movie
+    </button>
+       
+   
+    
+</EditForm>
+
+
+@code {
+    Movie movie = new Movie();
+    private List<Genre> genres = new List<Genre>();
+    private List<Industry> industries = new List<Industry>();
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        genres = await _client.GetFromJsonAsync<List<Genre>>(EndPoints.GenresEndpoint);
+        industries = await _client.GetFromJsonAsync<List<Industry>>(EndPoints.IndustryEndpoint);
+    }
+
+    private async Task AddMovie()
+    {
+        await _client.PostAsJsonAsync(EndPoints.MoviesEndpoint, movie);
+        navigationManager.NavigateTo("/movie/");
+    }
+}
+

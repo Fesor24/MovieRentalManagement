@@ -8,44 +8,42 @@ namespace MovieRentalManagement.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookingController : ControllerBase
+    public class CustomerController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
 
-        public BookingController(IUnitOfWork unit)
+        public CustomerController(IUnitOfWork unit)
         {
             _unit = unit;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBookings()
+        public async Task<IActionResult> GetAllCustomers()
         {
-            var includes = new List<string> { "Customers", "Movies" };
-            return Ok(await _unit.BookingRepository.GetAll(includes: includes));
+            return Ok(await _unit.CustomerRepository.GetAll());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var includes = new List<string> { "Customer", "Movie" };
-            var booking = await _unit.BookingRepository.Get(x => x.Id == id, includes: includes);
+            var customer = await _unit.CustomerRepository.Get(x => x.Id == id);
 
-            if (booking == null)
+            if (customer == null)
             {
                 return NotFound();
             }
-            return Ok(booking);
+            return Ok(customer);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGenre(int id, Booking booking)
+        public async Task<IActionResult> UpdateGenre(int id, Customer customer)
         {
             if (id == 0)
             {
                 return BadRequest();
             }
 
-            _unit.BookingRepository.Update(booking);
+            _unit.CustomerRepository.Update(customer);
 
             try
             {
@@ -53,7 +51,7 @@ namespace MovieRentalManagement.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await BookingExists(id))
+                if (!await CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -67,25 +65,25 @@ namespace MovieRentalManagement.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGenre(Booking booking)
+        public async Task<IActionResult> AddCustomer(Customer customer)
         {
-            await _unit.BookingRepository.Insert(booking);
+            await _unit.CustomerRepository.Insert(customer);
             await _unit.Complete(HttpContext);
 
-            return CreatedAtAction("GetById", new { id = booking.Id }, booking);
+            return CreatedAtAction("GetById", new { id = customer.Id }, customer);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGenre(int id)
         {
-            await _unit.BookingRepository.Delete(id);
+            await _unit.CustomerRepository.Delete(id);
             await _unit.Complete(HttpContext);
             return NoContent();
         }
 
-        private async Task<bool> BookingExists(int id)
+        private async Task<bool> CustomerExists(int id)
         {
-            var entity = await _unit.BookingRepository.Get(x => x.Id == id);
+            var entity = await _unit.CustomerRepository.Get(x => x.Id == id);
 
             return entity == null;
         }

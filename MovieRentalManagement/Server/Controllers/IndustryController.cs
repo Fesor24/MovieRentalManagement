@@ -73,7 +73,7 @@ namespace MovieRentalManagement.Server.Controllers
             return CreatedAtAction("GetById", new { id = industry.Id }, industry);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGenre(int id)
         {
             await _unit.IndustryRepository.Delete(id);

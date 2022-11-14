@@ -1,0 +1,77 @@
+﻿@page "/industry/"
+@using MovieRentalManagement.Shared.Domain
+@using MovieRentalManagement.Client.Static
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Authorization
+@using System.Net.Http.Json
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<a href="/industry/create" class="btn btn-outline-dark">
+    <span class="oi oi-plus"></span> 
+    Add Industry
+</a>
+
+@if (industries == null)
+{
+    <div class="alert alert-info">Loading industry...</div>
+}
+
+else
+{
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in industries)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <a href="/industry/view/@item.Id" class="btn btn-secondary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/industry/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+
+                        <button class="btn btn-danger" onclick="@(() => Delete(item.Id))">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Industry> industries;
+
+    protected async override Task OnInitializedAsync()
+    {
+        industries = await _client.GetFromJsonAsync<List<Industry>>(EndPoints.IndustryEndpoint);
+    }
+
+    private async Task Delete(int id)
+    {
+        var industry = industries.First(x => x.Id == id);
+
+        var result = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {industry.Name}");
+
+        if (result)
+        {
+            await _client.DeleteAsync($"{EndPoints.IndustryEndpoint}{id}");
+            await OnInitializedAsync();
+        }
+    }
+
+
+}

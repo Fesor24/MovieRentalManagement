@@ -9,5 +9,6 @@ namespace MovieRentalManagement.Shared.Domain
     public class Industry: BaseClass
     {
         public string Name { get; set; } = string.Empty;
+        public List<Movie>? Movies { get; set; }
     }
 }

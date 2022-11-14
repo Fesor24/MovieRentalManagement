@@ -1,0 +1,74 @@
+﻿@page "/booking/"
+@using MovieRentalManagement.Shared.Domain
+@using MovieRentalManagement.Client.Static
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Authorization
+@using System.Net.Http.Json
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<a class="btn btn-outline-dark" href="/booking/create">Add Bookings</a>
+
+@if(bookings == null){
+    <div class="alert alert-info">Loading bookings...</div>
+}
+
+else{
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Tax ID</th>
+                <th>Date</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var item in bookings){
+                <tr>
+                    <td>@item.Customers.TaxId</td>
+                    <td>@item.DateCreated.Date.ToString("dd MMMM yyyy")</td>
+                    <td>@((item.DateIn - item.DateOut).TotalDays.ToString()); </td>
+                   
+                    <td>
+                        <a href="/booking/view/@item.Id" class="btn btn-secondary">
+                            <span class="oi oi-book"></span>    
+                        </a>
+                        <a href="/booking/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+
+                        <button class="btn btn-danger" onclick="@(() => Delete(item.Id))">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Booking> bookings = new List<Booking>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        bookings = await _client.GetFromJsonAsync<List<Booking>>(EndPoints.BookingEndpoint);
+    }
+
+    private async Task Delete(int id){
+        var booking = bookings.First(x => x.Id == id);
+
+        var result = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {booking.Id}");
+
+        if(result){
+            await _client.DeleteAsync($"{EndPoints.BookingEndpoint}{id}");
+            await OnInitializedAsync();
+        }
+    }
+
+
+}

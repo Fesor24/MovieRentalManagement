@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieRentalManagement.Server", "MovieRentalManagement\Server\MovieRentalManagement.Server.csproj", "{3A8D89AC-FC14-4A08-949F-D07665DBF634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieRentalManagement.Server", "MovieRentalManagement\Server\MovieRentalManagement.Server.csproj", "{3A8D89AC-FC14-4A08-949F-D07665DBF634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieRentalManagement.Client", "MovieRentalManagement\Client\MovieRentalManagement.Client.csproj", "{D61864FA-B1A1-4183-982F-F121A17F8A39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieRentalManagement.Client", "MovieRentalManagement\Client\MovieRentalManagement.Client.csproj", "{D61864FA-B1A1-4183-982F-F121A17F8A39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieRentalManagement.Shared", "MovieRentalManagement\Shared\MovieRentalManagement.Shared.csproj", "{14B1654C-618C-403C-992C-0985C13529C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieRentalManagement.Shared", "MovieRentalManagement\Shared\MovieRentalManagement.Shared.csproj", "{14B1654C-618C-403C-992C-0985C13529C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

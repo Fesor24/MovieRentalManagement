@@ -11,8 +11,8 @@ namespace MovieRentalManagement.Shared.Domain
         public int Year { get; set; }
         public int GenreId { get; set; }
         public int IndustryId { get; set; }
-        public virtual Genre Genre { get; set; } = new Genre();
-        public virtual Industry Industry { get; set; } = new Industry();
+        public virtual Genre? Genre { get; set; }
+        public virtual Industry? Industry { get; set; }
         public string MovieRecordNumber { get; set; } = string.Empty;
         public virtual List<Booking> Bookings { get; set; } = new List<Booking>();
         public double RentalRate { get; set; }
