@@ -1,0 +1,37 @@
+﻿@page "/movies/edit/{id:int}"
+
+@inject HttpClient _client
+@inject NavigationManager navigationManager
+
+<h3>EditMovies</h3>
+
+
+<FormComponents movie="movie" genres="genres" industries="industries" ButtonText="Update Record" OnValidSubmit="@UpdateMovie">
+
+</FormComponents>
+
+
+
+@code {
+    Movie movie = new Movie();
+    [Parameter]public int id{ get; set; }
+
+    private List<Genre> genres{ get; set; }
+    private List<Industry> industries{ get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        genres = await _client.GetFromJsonAsync<List<Genre>>(EndPoints.GenresEndpoint);
+        industries = await _client.GetFromJsonAsync<List<Industry>>(EndPoints.IndustryEndpoint);
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        movie = await _client.GetFromJsonAsync<Movie>($"{EndPoints.MoviesEndpoint}{id}");
+    }
+
+    async Task UpdateMovie(){
+        await _client.PutAsJsonAsync($"{EndPoints.MoviesEndpoint}{id}", movie);
+        navigationManager.NavigateTo("/movie/");
+    }
+}

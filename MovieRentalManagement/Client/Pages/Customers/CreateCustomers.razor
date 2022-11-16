@@ -9,48 +9,11 @@
 <h3>Create New Customer</h3>
 <hr />
 
-<EditForm Model="@customer" OnValidSubmit="AddCustomer">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+<FormComponent customer="customer" ButtonText="Add Record" OnValidSubmit="AddCustomer">
 
-    <div class="form-group">
-        <label>Tax Identification Number: </label>
-        <div>
-            <InputText class="form-control" @bind-Value="customer.TaxId"></InputText>
-            <ValidationMessage For="@(()=> customer.TaxId)"></ValidationMessage>
-        </div>
-
-    </div>
-
-    <div class="form-group">
-        <label>Email Address: </label>
-        <div>
-            <InputText class="form-control" @bind-Value="@customer.EmailAddress"></InputText>
-            <ValidationMessage For="@(()=> customer.EmailAddress)"></ValidationMessage>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Contact Number: </label>
-        <div>
-            <InputText class="form-control" @bind-Value="@customer.ContactNumber"></InputText>
-            <ValidationMessage For="@(()=> customer.ContactNumber)"></ValidationMessage>
-        </div>
-    </div>
-    <div class="form-group">
-        <label>Address: </label>
-        <div>
-            <InputTextArea class="form-control" @bind-Value="@customer.Address"></InputTextArea>
-            <ValidationMessage For="@(()=> customer.Address)"></ValidationMessage>
-        </div>
-    </div>
+</FormComponent>
 
 
-    <button type="submit" class="btn btn-outline-dark btn-block">Add Customer
-        <span class="oi oi-bell"></span>
-    </button>
-
-</EditForm>
 
 @code {
         Customer customer = new Customer();

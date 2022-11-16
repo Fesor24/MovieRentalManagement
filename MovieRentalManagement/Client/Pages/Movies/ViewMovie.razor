@@ -1,0 +1,18 @@
+﻿@page "/movie/view/{id:int}"
+@inject HttpClient _client
+
+<FormComponents movie="movie" Disabled= "true">
+
+</FormComponents>
+
+@code {
+    Movie movie = new Movie();
+    [Parameter] public int id { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        movie = await _client.GetFromJsonAsync<Movie>($"{EndPoints.MoviesEndpoint}{id}");
+    }
+
+}

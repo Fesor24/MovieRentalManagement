@@ -1,0 +1,29 @@
+﻿@page "/booking/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager navigationManager
+
+
+<FormComponents booking="booking" movies="movies" customers="customers" OnValidSubmit="@UpdateBooking" ButtonText="Update Record">
+
+</FormComponents>
+
+
+
+@code {
+    [Parameter]public int id{ get; set; }
+    private List<Movie> movies{ get; set; }
+    private List<Customer> customers{ get; set; }
+
+    Booking booking = new Booking();
+
+    protected async override Task OnInitializedAsync()
+    {
+        movies = await _client.GetFromJsonAsync<List<Movie>>(EndPoints.MoviesEndpoint);
+        customers = await _client.GetFromJsonAsync<List<Customer>>(EndPoints.CustomerEndpoint);
+    }
+
+    async Task UpdateBooking(){
+        await _client.PutAsJsonAsync($"{EndPoints.BookingEndpoint}{id}", booking);
+        navigationManager.NavigateTo("/booking/");
+    }
+}

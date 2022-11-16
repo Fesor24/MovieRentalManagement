@@ -4,25 +4,11 @@
 @inject HttpClient _client
 @inject NavigationManager navigationManager
 
-<EditForm Model="@industry" OnValidSubmit="AddIndustry">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+<FormComponent industry="industry" ButtonText="Add Industry" OnValidSubmit="@AddIndustry">
 
-    <div class="form-group">
-        <label>Name: </label>
-        <div>
-            <InputText class="form-control" @bind-Value=@industry.Name></InputText>
-            <ValidationMessage For="@(()=> industry.Name)"></ValidationMessage>
-        </div>
-       
-    </div>
+</FormComponent>
 
-    <button type="submit" class="btn btn-outline-secondary">
-        <span class="oi oi-align-right"></span> Add Industry
 
-    </button>
-
-</EditForm>
 
 @code {
     Industry industry = new Industry();

@@ -9,73 +9,11 @@
 <hr />
 <br />
 
-<EditForm Model="@movie" OnValidSubmit="AddMovie">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+<FormComponents movie="movie" ButtonText="Add Movie" industries="industries" genres="genres" OnValidSubmit="@AddMovie">
 
-    <label class="form-group">Genre</label>
-    <div>
-        <select class="form-control" @bind="movie.GenreId">
-            <option value="">--Select a Genre--</option>
-            @if (genres != null)
-            {
-                foreach (var item in genres)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
+</FormComponents>
 
-        </select>
-        <ValidationMessage For="@(()=> movie.GenreId)"></ValidationMessage>
-    </div>
 
-    <label class="form-group">Industry</label>
-    <div>
-        <select class="form-control" @bind="movie.IndustryId">
-            <option value="">--Select an Industry--</option>
-            @if (industries != null)
-            {
-                foreach (var item in industries)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
-
-        </select>
-        <ValidationMessage For="@(()=> movie.IndustryId)"></ValidationMessage>
-    </div>
-
-    <div class="form-group">
-        <label>Year: </label>
-        <div>
-            <InputNumber @bind-Value="@movie.Year" class="form-control" />
-            <ValidationMessage For="@(()=> movie.Year)"></ValidationMessage>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Movie Record Number</label>
-        <div>
-            <InputText @bind-Value="@movie.MovieRecordNumber" class="form-control" />
-            <ValidationMessage For="@(() => movie.MovieRecordNumber)"></ValidationMessage>
-        </div>
-        
-    </div>
-    <div class="form-group">
-        <label>Rental Rate</label>
-        <div>
-            <InputNumber @bind-Value="@movie.RentalRate" class="form-control" />
-            <ValidationMessage For="@(() => movie.RentalRate)"></ValidationMessage>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-success btn-block mt-2">
-        Create Movie
-    </button>
-       
-   
-    
-</EditForm>
 
 
 @code {

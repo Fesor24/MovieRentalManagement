@@ -1,0 +1,18 @@
+﻿@page "/genre/view/{id:int}"
+@inject HttpClient _client
+
+
+
+<FormComponents genre="genre" Disabled="true">
+
+</FormComponents>
+
+@code {
+    [Parameter] public int id { get; set; }
+    Genre genre = new Genre();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        genre = await _client.GetFromJsonAsync<Genre>($"{EndPoints.GenresEndpoint}{id}");
+    }
+}

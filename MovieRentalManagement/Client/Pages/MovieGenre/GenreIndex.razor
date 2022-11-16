@@ -1,7 +1,6 @@
 ﻿@page "/genre/"
 @inject HttpClient _client
-@using MovieRentalManagement.Shared.Domain
-@using MovieRentalManagement.Client.Static
+
 @inject IJSRuntime js
 @attribute [Authorize]
 
@@ -12,6 +11,7 @@
 </a>
 <hr />
 <br />
+
 
 @if(genres == null){
     <div class="alert alert-info">Loading genres...</div>

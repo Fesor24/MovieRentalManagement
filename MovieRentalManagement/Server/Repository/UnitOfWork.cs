@@ -2,6 +2,9 @@
 using MovieRentalManagement.Server.IRepository;
 using MovieRentalManagement.Shared.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using MovieRentalManagement.Server.Models;
 
 namespace MovieRentalManagement.Server.Repository
 {
@@ -16,9 +19,12 @@ namespace MovieRentalManagement.Server.Repository
         private IGenericRepository<Booking> _bookingRepository;
         private IGenericRepository<Customer> _customerRepository;
 
-        public UnitOfWork(ApplicationDbContext context)
+        private UserManager<ApplicationUser> _userManager;
+
+        public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IGenericRepository<Movie> MovieRepository => _movieRepository ??= new GenericRepository<Movie>(_context);
@@ -33,7 +39,9 @@ namespace MovieRentalManagement.Server.Repository
         public async Task Complete(HttpContext httpContext)
         {
 
-            var user = httpContext.User.Identity.Name;
+            //var user = httpContext.User.Identity.Name;
+            var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _userManager.FindByIdAsync(userId);
 
             var entries = _context.ChangeTracker.Entries().
                 Where(x => x.State == EntityState.Modified ||
@@ -42,12 +50,12 @@ namespace MovieRentalManagement.Server.Repository
             foreach(var entry in entries)
             {
                 ((BaseClass)entry.Entity).DateUpdated = DateTime.Now;
-                ((BaseClass)entry.Entity).CreatedBy = user;
+                ((BaseClass)entry.Entity).CreatedBy = user.UserName;
 
                 if(entry.State == EntityState.Added)
                 {
                     ((BaseClass)entry.Entity).DateCreated = DateTime.Now;
-                    ((BaseClass)entry.Entity).CreatedBy = user;
+                    ((BaseClass)entry.Entity).CreatedBy = user.UserName;
                 }
             }
             await _context.SaveChangesAsync();

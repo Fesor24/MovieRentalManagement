@@ -1,0 +1,17 @@
+﻿@page "/industry/view/{id:int}"
+@inject HttpClient _client
+
+<FormComponent industry="industry">
+
+</FormComponent>
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    Industry industry = new Industry();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        industry = await _client.GetFromJsonAsync<Industry>($"{EndPoints.IndustryEndpoint}{id}");
+    }
+}

@@ -1,30 +1,25 @@
-﻿@page "/booking/create"
+﻿
 
-@using MovieRentalManagement.Shared.Domain
-@using MovieRentalManagement.Client.Static
-@inject HttpClient _client
-@inject NavigationManager navigationManager
-
-<h3>CreateBooking</h3>
-
-
-<EditForm Model="@booking" OnValidSubmit="AddBooking">
+<EditForm Model="@booking" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
 
+    <fieldset disabled="@Disabled">
     <div class="form-group">
         <label>Movie: </label>
 
         <InputSelect @bind-Value="booking.MovieId" class="form-control">
             <option value="">--select a movie--</option>
-            @if(movies != null){
-                foreach(var item in movies){
+            @if (movies != null)
+            {
+                foreach (var item in movies)
+                {
                     <option value="@item.Id">@item.Genre.Name @item.Industry.Name | @item.MovieRecordNumber</option>
                 }
             }
 
         </InputSelect>
-        <ValidationMessage For="@(()=> booking.MovieId)" ></ValidationMessage>
+        <ValidationMessage For="@(()=> booking.MovieId)"></ValidationMessage>
     </div>
 
     <div class="form-group">
@@ -48,32 +43,33 @@
         <label>Date Out: </label>
         <div>
             <InputDate @bind-Value="@booking.DateOut" class="form-control"></InputDate>
-            <ValidationMessage For = "@(()=> booking.DateOut)"></ValidationMessage>
+            <ValidationMessage For="@(()=> booking.DateOut)"></ValidationMessage>
         </div>
     </div>
+    </fieldset>
 
+
+    @if(!Disabled){
     <button class="btn btn-outline-dark d-block">
         <span class="oi oi-arrow-right"></span>
-        Add Booking
+        @ButtonText
 
     </button>
 
+    }
+  
+
+    <BackToList Target="booking">
+
+    </BackToList>
+
 </EditForm>
+
 @code {
-    Booking booking = new Booking{
-        DateOut = DateTime.Now.Date
-    };
-
-    List<Customer> customers = new List<Customer>();
-    List<Movie> movies = new List<Movie>();
-
-    protected async override Task OnInitializedAsync()
-    {
-        customers = await _client.GetFromJsonAsync<List<Customer>>(EndPoints.CustomerEndpoint);
-        movies = await _client.GetFromJsonAsync<List<Movie>>(EndPoints.MoviesEndpoint);
-    }
-    private async Task AddBooking(){
-        await _client.PostAsJsonAsync(EndPoints.BookingEndpoint, booking);
-        navigationManager.NavigateTo("/booking/");
-    }
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter]public Booking booking{ get; set; }
+    [Parameter]public List<Movie> movies{ get; set;}
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter]public List<Customer> customers{ get; set; }
+    [Parameter]public EventCallback OnValidSubmit{ get; set; }
 }
