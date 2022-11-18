@@ -1,11 +1,10 @@
 ﻿@page "/movie/"
-@using MovieRentalManagement.Shared.Domain
-@using MovieRentalManagement.Client.Static
+
 @using Microsoft.AspNetCore.Authorization
-@using System.Net.Http.Json
-@inject HttpClient _client
-@inject IJSRuntime js
+
 @attribute [Authorize]
+
+<TitleComponent Title="Movies"></TitleComponent>
 
 <a href="/movie/create" class="btn btn-outline-dark">
     <span class="oi oi-plus"></span> Add Movie    
@@ -57,23 +56,7 @@ else{
 
 
 @code {
-    private List<Movie> movies;
-
-    protected async override Task OnInitializedAsync()
-    {
-        movies = await _client.GetFromJsonAsync<List<Movie>>(EndPoints.MoviesEndpoint);
-    }
-
-    private async Task Delete(int id){
-        var movie = movies.First(x => x.Id == id);
-
-        var result = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {movie.MovieRecordNumber}");
-
-        if(result){
-            await _client.DeleteAsync($"{EndPoints.MoviesEndpoint}{id}");
-            await OnInitializedAsync();
-        }
-    }
+  
 
 
 }

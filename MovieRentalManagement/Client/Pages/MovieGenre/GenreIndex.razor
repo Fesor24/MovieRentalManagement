@@ -1,8 +1,8 @@
 ﻿@page "/genre/"
-@inject HttpClient _client
 
-@inject IJSRuntime js
 @attribute [Authorize]
+
+<TitleComponent Title="Genre"></TitleComponent>
 
 <a href="/genre/create/" class="btn btn-outline-dark">
     <span class="oi oi-plus"></span>
@@ -49,23 +49,6 @@ else{
 }
 
 @code {
-    private List<Genre> genres;
-
-    protected async override Task OnInitializedAsync()
-    {
-        genres = await _client.GetFromJsonAsync<List<Genre>>(EndPoints.GenresEndpoint);
-       
-    }
-
-    private async Task Delete(int id){
-        var genre = genres.First(x => x.Id == id);
-
-        if(await js.InvokeAsync<bool>("confirm", $"Do you want to delete {genre.Name}?")){
-            await _client.DeleteAsync($"{EndPoints.GenresEndpoint}{id}");
-            await OnInitializedAsync();
-        }
-
-        
-    }
+   
 
 }

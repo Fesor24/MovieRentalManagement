@@ -4,9 +4,10 @@
 @using Microsoft.JSInterop
 @using Microsoft.AspNetCore.Authorization
 @using System.Net.Http.Json
-@inject HttpClient _client
-@inject IJSRuntime js
+
 @attribute [Authorize]
+
+<TitleComponent Title="Industry"></TitleComponent>
 
 <a href="/industry/create" class="btn btn-outline-dark">
     <span class="oi oi-plus"></span> 
@@ -53,25 +54,7 @@ else
 
 
 @code {
-    private List<Industry> industries;
-
-    protected async override Task OnInitializedAsync()
-    {
-        industries = await _client.GetFromJsonAsync<List<Industry>>(EndPoints.IndustryEndpoint);
-    }
-
-    private async Task Delete(int id)
-    {
-        var industry = industries.First(x => x.Id == id);
-
-        var result = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {industry.Name}");
-
-        if (result)
-        {
-            await _client.DeleteAsync($"{EndPoints.IndustryEndpoint}{id}");
-            await OnInitializedAsync();
-        }
-    }
+    
 
 
 }

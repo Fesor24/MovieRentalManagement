@@ -2,8 +2,7 @@
 
 @using MovieRentalManagement.Shared.Domain
 @using MovieRentalManagement.Client.Static
-@inject HttpClient _client
-@inject NavigationManager navigationManager
+
 
 <h3>CreateBooking</h3>
 
@@ -14,20 +13,5 @@
 
 
 @code {
-    Booking booking = new Booking{
-        DateOut = DateTime.Now.Date
-    };
-
-    List<Customer> customers = new List<Customer>();
-    List<Movie> movies = new List<Movie>();
-
-    protected async override Task OnInitializedAsync()
-    {
-        customers = await _client.GetFromJsonAsync<List<Customer>>(EndPoints.CustomerEndpoint);
-        movies = await _client.GetFromJsonAsync<List<Movie>>(EndPoints.MoviesEndpoint);
-    }
-    private async Task AddBooking(){
-        await _client.PostAsJsonAsync(EndPoints.BookingEndpoint, booking);
-        navigationManager.NavigateTo("/booking/");
-    }
+    
 }

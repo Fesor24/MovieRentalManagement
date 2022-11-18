@@ -1,8 +1,7 @@
 ﻿@page "/genre/create/"
 
 
-@inject HttpClient _client
-@inject NavigationManager navigationManager
+
 
 <FormComponents genre="genre" ButtonText="Add Genre" OnValidSubmit="@AddGenre">
 
@@ -11,17 +10,5 @@
 
 
 @code {
-    Genre genre = new Genre();
-
-    
-
-    protected async override Task OnInitializedAsync()
-    {
-        
-    }
-
-    private async Task AddGenre(){
-        await _client.PostAsJsonAsync(EndPoints.GenresEndpoint, genre);
-        navigationManager.NavigateTo("/genre/");
-    }
+   
 }

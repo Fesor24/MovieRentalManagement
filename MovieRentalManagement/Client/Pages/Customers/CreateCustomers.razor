@@ -2,8 +2,7 @@
 
 @using MovieRentalManagement.Shared.Domain
 @using MovieRentalManagement.Client.Static
-@inject HttpClient _client
-@inject NavigationManager navigationManager
+
 
 
 <h3>Create New Customer</h3>
@@ -16,15 +15,7 @@
 
 
 @code {
-        Customer customer = new Customer();
-
-        private async Task AddCustomer()
-        {
-
-            await _client.PostAsJsonAsync(EndPoints.CustomerEndpoint, customer);
-            navigationManager.NavigateTo("/customer/");
-
-        }
+        
 
 
 }

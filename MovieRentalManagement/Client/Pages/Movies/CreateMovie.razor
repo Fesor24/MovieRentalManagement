@@ -1,8 +1,7 @@
 ﻿@page "/movie/create"
 
 @using MovieRentalManagement.Client.Static
-@inject HttpClient _client
-@inject NavigationManager navigationManager
+
 
 
 <h3>Create New Movie</h3>
@@ -17,22 +16,6 @@
 
 
 @code {
-    Movie movie = new Movie();
-    private List<Genre> genres = new List<Genre>();
-    private List<Industry> industries = new List<Industry>();
-
-
-
-    protected async override Task OnInitializedAsync()
-    {
-        genres = await _client.GetFromJsonAsync<List<Genre>>(EndPoints.GenresEndpoint);
-        industries = await _client.GetFromJsonAsync<List<Industry>>(EndPoints.IndustryEndpoint);
-    }
-
-    private async Task AddMovie()
-    {
-        await _client.PostAsJsonAsync(EndPoints.MoviesEndpoint, movie);
-        navigationManager.NavigateTo("/movie/");
-    }
+    
 }
 

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MovieRentalManagement.Client;
+using MovieRentalManagement.Client.Services;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace MovieRentalManagement.Client
 {
@@ -13,11 +14,18 @@ namespace MovieRentalManagement.Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddHttpClient("MovieRentalManagement.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            builder.Services.AddHttpClient("MovieRentalManagement.ServerAPI", (sp, client) => {
+                client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+                client.EnableIntercept(sp);
+                })
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("MovieRentalManagement.ServerAPI"));
+
+            builder.Services.AddHttpClientInterceptor();
+
+            builder.Services.AddScoped<HttpInterceptorService>();
 
             builder.Services.AddApiAuthorization();
 
